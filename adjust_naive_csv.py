@@ -4,17 +4,22 @@ import re
 
 ORIGINAL_FILE = 'datasets/CardiacDataOriginal.csv'
 TEMP_FILE = 'datasets/CardiacDataAdj.csv'
+USELESS_COLUMNS = [33,34,36,37,38,39,40,41]
 YES = 'Yes'
 NO = 'No'
 
 reader = csv.reader(open(ORIGINAL_FILE,'r'))
 writer = csv.writer(open(TEMP_FILE,'w'))
-header= next(reader)
-writer.writerow(header)
+old_header = next(reader)
+new_header= [x for x in old_header
+    if old_header.index(x) not in USELESS_COLUMNS]
+writer.writerow(new_header)
 row = next(reader)
 while row:
     new_row = []
-    for value in row:
+    for i,value in enumerate(row):
+        if i in USELESS_COLUMNS:
+            continue
         if value == '0':
             new_value = YES
         elif value == '1':
